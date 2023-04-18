@@ -1,5 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import dotenv from "dotenv";
+import cookieSession from "cookie-session";
 import { currentUser, requireAuth } from "./middlewares";
 
 import { errorHandler, NotFoundError } from "@greateki-ticket-ms-demo/common";
@@ -9,9 +10,17 @@ import { AppRouter } from "./router";
 
 const app = express();
 
+app.set("trust proxy", true); //this is to allow request into app when we provision a reverse proxy either via an ingress controller or load balancer
 app.use(express.json());
 
 dotenv.config();
+
+app.use(
+  cookieSession({
+    signed: false,
+    secure: process.env.NODE_ENV !== "test", // disabling secure mode for test env
+  })
+);
 
 app.use(currentUser);
 

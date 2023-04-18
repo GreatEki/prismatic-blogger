@@ -21,13 +21,12 @@ export const currentUser = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (!req.session?.jwt) return next();
+  const token = req.headers.authorization?.split(" ")[1];
+
+  if (!token) return next();
 
   try {
-    const payload = jwt.verify(
-      req.session.jwt,
-      process.env.JWT_KEY!
-    ) as UserPayload;
+    const payload = jwt.verify(token, process.env.JWT_KEY!) as UserPayload;
     req.user = payload;
   } catch (err) {}
   next();

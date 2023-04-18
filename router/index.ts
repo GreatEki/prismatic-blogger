@@ -1,8 +1,8 @@
 import { Router } from "express";
-import UserRouter from "../lib/user/user.router";
+import PostRouter from "../lib/post/post.router";
 
 const router = Router();
 
-router.use("/user", UserRouter);
+router.use("/post", PostRouter);
 
 export { router as AppRouter };

@@ -6,6 +6,12 @@ export const requireAuth = async (
   res: Response,
   next: NextFunction
 ) => {
-  if (!req.user)
-    throw new UnauthorizedError("Authorization Failed, Please sign in");
+  try {
+    if (!req.user)
+      throw new UnauthorizedError("Authorization Failed, Please sign in");
+  } catch (err) {
+    next(err);
+  }
+
+  next();
 };

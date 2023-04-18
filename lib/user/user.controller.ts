@@ -63,6 +63,8 @@ export const signIn = async (
 
     const match = bcrypt.compareSync(password, user.password);
 
+    if (!match) throw new BadRequestError("Invalid credentials");
+
     const token = jwt.sign(
       {
         name: user.name,
@@ -73,11 +75,7 @@ export const signIn = async (
       process.env.JWT_KEY!
     );
 
-    req.session = {
-      jwt: token,
-    };
-
-    return res.status(200).json({
+    return res.cookie("access_token", token, { httpOnly: true }).json({
       status: "OK",
       statusCode: 200,
       message: "Sign in successful",
