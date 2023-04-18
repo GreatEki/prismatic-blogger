@@ -72,6 +72,25 @@ export const signIn = async (
       },
       process.env.JWT_KEY!
     );
+
+    req.session = {
+      jwt: token,
+    };
+
+    return res.status(200).json({
+      status: "OK",
+      statusCode: 200,
+      message: "Sign in successful",
+      data: {
+        token,
+        user: {
+          name: user.name,
+          email: user.email,
+          age: user.age,
+          role: user.role,
+        },
+      },
+    });
   } catch (err) {
     next(err);
   }
