@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import prisma from "../../config/prisma-client";
 import { BadRequestError } from "@greateki-ticket-ms-demo/common";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const createUser = async (
   req: Request,
@@ -27,6 +28,14 @@ export const createUser = async (
         password: hashPass,
         age,
       },
+      select: {
+        name: true,
+        email: true,
+        age: true,
+        role: true,
+        authoredPosts: true,
+        favouritePosts: true,
+      },
     });
 
     return res.json({
@@ -35,6 +44,34 @@ export const createUser = async (
       message: "User created",
       data: newUser,
     });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const signIn = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await prisma.user.findFirst({ where: { email } });
+
+    if (!user) throw new BadRequestError("Invalid credentials");
+
+    const match = bcrypt.compareSync(password, user.password);
+
+    const token = jwt.sign(
+      {
+        name: user.name,
+        email: user.email,
+        age: user.age,
+        role: user.role,
+      },
+      process.env.JWT_KEY!
+    );
   } catch (err) {
     next(err);
   }
