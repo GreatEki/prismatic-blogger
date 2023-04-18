@@ -4,4 +4,6 @@ const PostRouter = Router();
 
 PostRouter.route("/add").post(controller.createPost);
 
+PostRouter.route("/").get(controller.getPosts);
+
 export default PostRouter;

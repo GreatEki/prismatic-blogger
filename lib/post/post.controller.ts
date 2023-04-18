@@ -42,3 +42,41 @@ export const createPost = async (
     next(err);
   }
 };
+
+export const getPosts = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { page, limit } = req.query;
+
+    const skip = (Number(page) - 1) * Number(limit);
+    const take = Number(limit);
+
+    const posts = await prisma.post.findMany({
+      take,
+      skip,
+      orderBy: {
+        createdAt: "desc",
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
+            email: true,
+            age: true,
+            role: true,
+          },
+        },
+      },
+    });
+
+    return res.json({
+      message: "Posts returned successfully",
+      data: posts,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
