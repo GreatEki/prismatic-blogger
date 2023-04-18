@@ -67,6 +67,7 @@ export const signIn = async (
 
     const token = jwt.sign(
       {
+        id: user.id,
         name: user.name,
         email: user.email,
         age: user.age,
@@ -82,6 +83,7 @@ export const signIn = async (
       data: {
         token,
         user: {
+          id: user.id,
           name: user.name,
           email: user.email,
           age: user.age,
