@@ -35,7 +35,7 @@ model Post {
   id             String     @id @default(uuid())
   title          String
   body           String
-  averageRating  Float
+  averageRating  Float?
   createdAt      DateTime   @default(now())
   updatedAt      DateTime   @updatedAt
   author         User       @relation("authoredPosts", fields: [authorId], references: [id])

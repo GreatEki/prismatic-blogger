@@ -12,6 +12,7 @@
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-session": "^2.0.44",
+    "@types/hapi__joi": "^17.1.9",
     "@types/node": "^18.15.11",
     "nodemon": "^2.0.22",
     "prisma": "^4.12.0",
@@ -20,6 +21,7 @@
   },
   "dependencies": {
     "@greateki-ticket-ms-demo/common": "^1.0.10",
+    "@hapi/joi": "^17.1.1",
     "@prisma/client": "^4.12.0",
     "bcrypt": "^5.1.0",
     "cookie-session": "^2.0.0",

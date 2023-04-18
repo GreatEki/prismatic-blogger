@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import prisma from "../../config/prisma-client";
+import { UnauthorizedError } from "@greateki-ticket-ms-demo/common";
 
 export const createPost = async (
   req: Request,
@@ -9,13 +10,25 @@ export const createPost = async (
   try {
     const { title, body, categories, averageRating } = req.body;
 
+    const author = await prisma.user.findFirst({
+      where: { id: req.user!.id },
+    });
+
+    if (!author) throw new UnauthorizedError("Authorization Failure");
+
     const post = await prisma.post.create({
       data: {
         title,
         body,
         averageRating,
-        authorId: req.user!.id,
-        categories,
+        categories: {
+          connect: categories,
+        },
+        author: {
+          connect: {
+            id: author.id,
+          },
+        },
       },
     });
 
@@ -23,6 +36,7 @@ export const createPost = async (
       status: "OK",
       statusCode: 200,
       message: "Success",
+      data: post,
     });
   } catch (err) {
     next(err);
