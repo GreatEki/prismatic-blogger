@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import prisma from "../../config/prisma-client";
-import { BadRequestError } from "@greateki-ticket-ms-demo/common";
+import {
+  BadRequestError,
+  NotFoundError,
+} from "@greateki-ticket-ms-demo/common";
 
 export const createCategory = async (
   req: Request,
@@ -27,6 +30,43 @@ export const createCategory = async (
       statusCode: 201,
       message: "New Category Added",
       data: newCategory,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getCategories = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const categories = await prisma.category.findMany();
+
+    return res.json({
+      message: "categories fetched successfully",
+      data: categories,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getCategory = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const id = req.params.categoryId;
+  try {
+    const category = await prisma.category.findFirst({ where: { id } });
+
+    if (!category) throw new NotFoundError("Category not found");
+
+    return res.json({
+      message: "category fetched successfully",
+      data: category,
     });
   } catch (err) {
     next(err);
