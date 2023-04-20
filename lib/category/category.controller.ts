@@ -81,22 +81,24 @@ export const deleteCategory = async (
   try {
     const { categoryId } = req.params;
 
-    const category = await prisma.category.update({
-      where: { id: categoryId },
-      data: {
-        posts: {
-          disconnect: [{ id: categoryId }],
+    const result = await prisma.$transaction(async (tx) => {
+      await tx.category.update({
+        where: { id: categoryId },
+        data: {
+          posts: {
+            disconnect: [{ id: categoryId }],
+          },
         },
-      },
-    });
+      });
 
-    const deleteCategory = await prisma.category.delete({
-      where: { id: category.id },
+      await tx.category.delete({
+        where: { id: categoryId },
+      });
     });
 
     return res.json({
       message: "Posts disconnected from category",
-      data: deleteCategory,
+      data: result,
     });
   } catch (err) {
     next(err);

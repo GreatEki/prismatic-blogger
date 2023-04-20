@@ -55,11 +55,17 @@ export const updatePost = async (
   try {
     const { postId } = req.params;
 
-    const { title, body } = req.body;
+    const { title, body, categories } = req.body;
 
     const post = await prisma.post.update({
       where: { id: postId },
-      data: { title, body },
+      data: {
+        title,
+        body,
+        categories: {
+          connect: categories,
+        },
+      },
     });
 
     return res.json({

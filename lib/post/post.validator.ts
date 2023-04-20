@@ -10,7 +10,7 @@ const CreatePostValSchema = Joi.object({
   averageRating: Joi.number().optional(),
 });
 
-export const createPostValidator = async (
+export const PostValidator = async (
   req: Request,
   res: Response,
   next: NextFunction
