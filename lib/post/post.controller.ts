@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import prisma from "../../config/prisma-client";
-import { UnauthorizedError } from "@greateki-ticket-ms-demo/common";
+import {
+  NotFoundError,
+  UnauthorizedError,
+} from "@greateki-ticket-ms-demo/common";
 import { Paginate } from "../../interface/pagination";
 
 export const createPost = async (
@@ -120,6 +123,29 @@ export const getPosts = async (
     return res.json({
       message: "Posts returned successfully",
       data: results,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deletePost = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { postId } = req.params;
+
+    const post = await prisma.post.delete({
+      where: { id: postId },
+    });
+
+    if (!post) throw new NotFoundError("No post found");
+
+    return res.json({
+      message: "Post delete",
+      data: post,
     });
   } catch (err) {
     next(err);

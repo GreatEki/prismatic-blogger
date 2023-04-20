@@ -4,7 +4,9 @@ const PostRouter = Router();
 
 PostRouter.route("/add").post(controller.createPost);
 
-PostRouter.route("/:postId").put(controller.updatePost);
+PostRouter.route("/:postId")
+  .put(controller.updatePost)
+  .delete(controller.deletePost);
 
 PostRouter.route("/").get(controller.getPosts);
 
