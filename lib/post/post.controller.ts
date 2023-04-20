@@ -117,6 +117,7 @@ export const getPosts = async (
             role: true,
           },
         },
+        categories: true,
       },
     });
 
